@@ -8,21 +8,35 @@ public class PlayerController : MonoBehaviour
     public float jumpForce = 100f;
     public LayerMask groundLayer;
 
-    private Rigidbody rb;
+    protected Rigidbody rb;
     // Start is called before the first frame update
-    void Start()
+    public virtual void Start()
     {
         rb = GetComponent<Rigidbody>();
     }
 
     // Update is called once per frame
-    void Update()
+    public virtual void Update()
     {
         rb.velocity = new Vector3(GetInputAxis().x * speed, rb.velocity.y, GetInputAxis().z * speed);
 
         if(GetJumpInput() && OnGround())
         {
             Jump();
+        }
+
+        List<Collider> boxArray = new List<Collider>(Physics.OverlapBox(transform.position, new Vector3(1f, 1f, 1f), transform.rotation, groundLayer));
+        if (boxArray.Count > 0)
+        {
+            Collider thisSHouldBeYourPlatformScript;
+            foreach(Collider hitTarget in boxArray)
+            {
+                if(hitTarget.gameObject.TryGetComponent<Collider>(out thisSHouldBeYourPlatformScript))
+                {
+                    // + thisSHouldBeYourPlatformScript.positiondifference
+                    transform.position += thisSHouldBeYourPlatformScript.transform.position;
+                }
+            }
         }
     }
 
