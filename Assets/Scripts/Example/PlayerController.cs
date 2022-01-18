@@ -19,7 +19,6 @@ public class PlayerController : MonoBehaviour
     public virtual void Update()
     {
         rb.velocity = new Vector3(GetInputAxis().x * speed, rb.velocity.y, GetInputAxis().z * speed);
-
         if(GetJumpInput() && OnGround())
         {
             Jump();
@@ -82,7 +81,7 @@ public class PlayerController : MonoBehaviour
         return Physics.OverlapSphere(transform.position, 0.1f, groundLayer).Length > 0;
     }
 
-    void OnDrawGizmos()
+    protected virtual void OnDrawGizmos()
     {
         Gizmos.color = Color.green;
         Gizmos.DrawWireSphere(transform.position, 0.1f);

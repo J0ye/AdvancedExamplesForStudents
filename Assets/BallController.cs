@@ -22,15 +22,27 @@ public class BallController : PlayerController
     {
         Vector3 inputVec = new Vector3(GetInputAxis().x * speed, 0, GetInputAxis().z * speed);
         rb.AddForce(inputVec, ForceMode.Force);
-        rb.velocity = Vector3.ClampMagnitude(rb.velocity, maxVelocity);
-        
-        if(Input.GetKey(KeyCode.Space))
+        Vector3 clamped = Vector3.ClampMagnitude(rb.velocity, maxVelocity);
+        rb.velocity = new Vector3(clamped.x, rb.velocity.y, clamped.z);
+
+        Debug.Log(OnGround());
+        if (Input.GetButton("Jump") && OnGround())
+        {
+            Jump();
+        }
+
+        if(Input.GetButton("Fire2"))
         {
             rb.drag = handBreakDrag;
         } else
         {
             rb.drag = startDrag;
         }
+    }
+    protected override bool OnGround()
+    {
+        return Physics.OverlapSphere(transform.position - (Vector3.up / 2), 
+            0.1f, groundLayer).Length > 0;
     }
 
     protected override Vector3 GetInputAxis()
@@ -44,5 +56,11 @@ public class BallController : PlayerController
 
         Vector3 re = forward + sideways;
         return re;
+    }
+
+    protected override void OnDrawGizmos()
+    {
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(transform.position - (Vector3.up / 2), 0.1f);
     }
 }

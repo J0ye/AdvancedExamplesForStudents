@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public enum NewMenuState { Main, Setting, Credits }
@@ -11,7 +12,8 @@ public class Menu : MonoBehaviour
     public GameObject main;
     public GameObject settings;
     public Dropdown dropDown;
-    public Text display;
+
+    public NewMenuState state = NewMenuState.Main;
 
     private Resolution[] m_resolution;
 
@@ -31,8 +33,11 @@ public class Menu : MonoBehaviour
 
         DropDownStart();
     }
+    public void PressPlay()
+    {
+        SceneManager.LoadScene(1);
+    }
 
-    public NewMenuState state = NewMenuState.Main;
     public void AdjustAudio(float val)
     {
         mixer.SetFloat("Volume", val);
@@ -68,8 +73,6 @@ public class Menu : MonoBehaviour
                 settings.SetActive(true);
                 break;
         }
-
-        display.text = state.ToString();
     }
 
     private void DropDownStart()
